@@ -76,6 +76,28 @@ class UtilisateurController extends MainController
         header("Location: ".URL."accueil");
     }
 
+    /**
+     * Permet de vérifier la création de compte et la valider en traitant les infos comme le mot de passe
+     * @throws Exception
+     */
+    public function validation_creerCompte($login, $password, $mail): void
+    {
+        if($this->utilisateurManager->verifLoginDisponible($login)){
+            $passwordCrypte = password_hash($password,PASSWORD_DEFAULT);
+            $clef = random_int(0,9999);
+            if($this->utilisateurManager->bdCreerCompte($login,$passwordCrypte,$mail,$clef)){
+                Toolbox::ajouterMessageAlerte("La compte a été créé, Un mail de validation vous a été envoyé !", Toolbox::COULEUR_VERTE);
+                header("Location: ".URL."login");
+            } else {
+                Toolbox::ajouterMessageAlerte("Erreur lors de la création du compte, recommencez !", Toolbox::COULEUR_ROUGE);
+                header("Location: ".URL."creerCompte");
+            }
+        } else {
+            Toolbox::ajouterMessageAlerte("Le login est déjà utilisé !", Toolbox::COULEUR_ROUGE);
+            header("Location: ".URL."creerCompte");
+        }
+    }
+
     // Ici on fait en sorte que la fonction fasse référence à la fonction du parent
     public function pageErreur($msg): void
     {

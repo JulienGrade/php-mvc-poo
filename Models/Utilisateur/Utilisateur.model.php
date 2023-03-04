@@ -63,5 +63,39 @@ class UtilisateurManager extends MainManager
         $stmt->closeCursor();
         return $res;
     }
+
+    /**
+     * Permet d'enregistrer la création du compte dans la base de données
+     * @param $login
+     * @param $passwordCrypte
+     * @param $mail
+     * @param $clef
+     * @return bool
+     */
+    public function bdCreerCompte($login,$passwordCrypte,$mail,$clef): bool
+    {
+        $req = "INSERT INTO utilisateur (login, password, mail, est_valide, role, clef, image)
+        VALUES (:login, :password, :mail, 0, 'utilisateur', :clef, '')";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":login",$login,PDO::PARAM_STR);
+        $stmt->bindValue(":password",$passwordCrypte,PDO::PARAM_STR);
+        $stmt->bindValue(":mail",$mail,PDO::PARAM_STR);
+        $stmt->bindValue(":clef",$clef,PDO::PARAM_INT);
+        $stmt->execute();
+        $estModifier = ($stmt->rowCount() > 0);
+        $stmt->closeCursor();
+        return $estModifier;
+    }
+
+    /**
+     * Permet de vérifier si la lgogin existe déjà en base de données
+     * @param $login
+     * @return bool
+     */
+    public function verifLoginDisponible($login): bool
+    {
+        $utilisateur = $this->getUserInformation($login);
+        return empty($utilisateur);
+    }
 }
 
