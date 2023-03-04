@@ -37,6 +37,20 @@ class VisiteurController extends MainController
         $this->genererPage($data_page);
     }
 
+    /**
+     * Permet d'afficher la page de création de compte
+     * @return void
+     */
+    public function creerCompte(){
+        $data_page = [
+            "page_description" => "Page de création de compte",
+            "page_title" => "Page de création de compte",
+            "view" => "views/Visiteur/creerCompte.view.php",
+            "template" => "views/partials/template.php"
+        ];
+        $this->genererPage($data_page);
+    }
+
     // Ici on fait en sorte que la fonction fasse référence à la fonction du parent
     public function pageErreur($msg): void
     {
