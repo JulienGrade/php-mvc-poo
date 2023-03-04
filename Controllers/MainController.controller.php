@@ -1,37 +1,19 @@
 <?php
-require_once("models/MainManager.model.php");
 require_once("controllers/Toolbox.class.php");
 
-class MainController{
-    private $mainManager;
+abstract class MainController{
 
-    public function __construct(){
-        $this->mainManager = new MainManager();
-    }
-
-    private function genererPage($data){
-        extract($data);
+    protected function genererPage($data): void
+    {
+        extract($data, EXTR_OVERWRITE);
         ob_start();
         require_once($view);
         $page_content = ob_get_clean();
         require_once($template);
     }
 
-    //Propriété "page_css" : tableau permettant d'ajouter des fichiers CSS spécifiques
-    //Propriété "page_javascript" : tableau permettant d'ajouter des fichiers JavaScript spécifiques
-    public function accueil(){
-        // Toolbox::ajouterMessageAlerte("test", Toolbox::COULEUR_VERTE);
-
-        $data_page = [
-            "page_description" => "Description de la page d'accueil",
-            "page_title" => "Titre de la page d'accueil",
-            "view" => "views/accueil.view.php",
-            "template" => "views/partials/template.php"
-        ];
-        $this->genererPage($data_page);
-    }
-
-    public function pageErreur($msg){
+    protected function pageErreur($msg): void
+    {
         $data_page = [
             "page_description" => "Page permettant de gérer les erreurs",
             "page_title" => "Page d'erreur",

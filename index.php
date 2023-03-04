@@ -4,8 +4,8 @@ session_start();
 define("URL", str_replace("index.php","",(isset($_SERVER['HTTPS'])? "https" : "http").
     "://".$_SERVER['HTTP_HOST'].$_SERVER["PHP_SELF"]));
 
-require_once("./Controllers/MainController.controller.php");
-$mainController = new MainController();
+require_once("./Controllers/Visiteur/VisiteurController.php");
+$visiteurController = new VisiteurController();
 
 try {
     if(empty($_GET['page'])){
@@ -16,11 +16,11 @@ try {
     }
 
     switch($page){
-        case "accueil" : $mainController->accueil();
+        case "accueil" : $visiteurController->accueil();
             break;
         case "compte" :
             switch($url[1]){
-                case "profil": $mainController->accueil();
+                case "profil": $visiteurController->accueil();
                     break;
             }
             break;
@@ -29,3 +29,4 @@ try {
 } catch (Exception $e){
     $mainController->pageErreur($e->getMessage());
 }
+
