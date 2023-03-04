@@ -65,6 +65,17 @@ class UtilisateurController extends MainController
         $this->genererPage($data_page);
     }
 
+    /**
+     * Permet de se déconnecter de l'application
+     * @return void
+     */
+    public function deconnexion(): void
+    {
+        Toolbox::ajouterMessageAlerte("La deconnexion est effectuée",Toolbox::COULEUR_VERTE);
+        unset($_SESSION['profil']);
+        header("Location: ".URL."accueil");
+    }
+
     // Ici on fait en sorte que la fonction fasse référence à la fonction du parent
     public function pageErreur($msg): void
     {
