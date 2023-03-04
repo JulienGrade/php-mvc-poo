@@ -3,9 +3,12 @@ session_start();
 
 define("URL", str_replace("index.php","",(isset($_SERVER['HTTPS'])? "https" : "http").
     "://".$_SERVER['HTTP_HOST'].$_SERVER["PHP_SELF"]));
-
+require_once("./Controllers/Securite.class.php");
 require_once("./Controllers/Visiteur/VisiteurController.php");
+require_once("./Controllers/Utilisateur/UtilisateurController.php");
+
 $visiteurController = new VisiteurController();
+$utilisateurController = new UtilisateurController();
 
 try {
     if(empty($_GET['page'])){
@@ -18,6 +21,21 @@ try {
     switch($page){
         case "accueil" : $visiteurController->accueil();
             break;
+        case "login" : $visiteurController->login();
+            break;
+        case "validation_login" :
+            if(!empty($_POST['login']) && !empty($_POST['password'])){
+                $login = Securite::secureHTML($_POST['login']);
+                $password = Securite::secureHTML($_POST['password']);
+                $utilisateurController->validation_login($login, $password);
+            }else{
+                Toolbox::ajouterMessageAlerte(
+                    "Login ou mot de passe non renseigné",
+                    Toolbox::COULEUR_ROUGE
+                );
+                header('Location:'.URL."login");
+            }
+            break;
         case "compte" :
             switch($url[1]){
                 case "profil": $visiteurController->accueil();
@@ -27,6 +45,6 @@ try {
         default : throw new RuntimeException("La page n'existe pas");
     }
 } catch (Exception $e){
-    $mainController->pageErreur($e->getMessage());
+    $visiteurController->pageErreur($e->getMessage());
 }
 
