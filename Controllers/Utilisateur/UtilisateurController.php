@@ -46,6 +46,25 @@ class UtilisateurController extends MainController
         }
     }
 
+    /**
+     * Permet d'afficher la page profil à l'utilisateur connecté
+     * @return void
+     */
+    public function profil(): void
+    {
+        $datas = $this->utilisateurManager->getUserInformation($_SESSION['profil']['login']);
+        $_SESSION['profil']["role"] = $datas['role'];
+
+        $data_page = [
+            "page_description" => "Page de profil",
+            "page_title" => "Page de profil",
+            "utilisateur" => $datas,
+            "view" => "views/Utilisateur/profil.view.php",
+            "template" => "views/partials/template.php"
+        ];
+        $this->genererPage($data_page);
+    }
+
     // Ici on fait en sorte que la fonction fasse référence à la fonction du parent
     public function pageErreur($msg): void
     {

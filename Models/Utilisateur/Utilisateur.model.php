@@ -3,14 +3,11 @@
 require_once ('./Models/MainManager.model.php');
 class UtilisateurManager extends MainManager
 {
-    public function getUtilisateurs(){
-        $req = $this->getBdd()->prepare("SELECT * FROM utilisateur");
-        $req->execute();
-        $datas = $req->fetchAll(PDO::FETCH_ASSOC);
-        $req->closeCursor();
-        return $datas;
-    }
-
+    /**
+     * Permet de récupérer le mot de passe encodé en base de données d'un utilisateur
+     * @param $login
+     * @return mixed
+     */
     private function getPasswordUser($login)
     {
         $req = "SELECT password FROM utilisateur WHERE login = :login";
@@ -49,6 +46,22 @@ class UtilisateurManager extends MainManager
         // Permet de clôturer la requête
         $stmt->closeCursor();
         return (int)$res['est_valide'];
+    }
+
+    /**
+     * Permet de récupérer les informations d'un utilisateur
+     * @param $login
+     * @return mixed
+     */
+    public function getUserInformation($login)
+    {
+        $req = "SELECT * FROM utilisateur WHERE login = :login";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":login",$login,PDO::PARAM_STR);
+        $stmt->execute();
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $res;
     }
 }
 
