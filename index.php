@@ -102,6 +102,8 @@ try {
                 switch($url[1]){
                     case "droits" : $administrateurController->droits();
                         break;
+                    case "validation_modificationRole" : $administrateurController->validation_modificationRole($_POST['login'],$_POST['role']);
+                        break;
                     default : throw new Exception("La page n'existe pas");
                 }
             }

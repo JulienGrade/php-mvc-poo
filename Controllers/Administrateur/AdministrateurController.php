@@ -25,6 +25,22 @@ class AdministrateurController extends MainController{
         $this->genererPage($data_page);
     }
 
+    /**
+     * Validation et enregistrement de la modification de rôle
+     * @param $login
+     * @param $role
+     * @return void
+     */
+    public function validation_modificationRole($login,$role): void
+    {
+        if($this->administrateurManager->bdModificationRoleUser($login,$role)){
+            Toolbox::ajouterMessageAlerte("La modification a été prise en compte", Toolbox::COULEUR_VERTE);
+        } else {
+            Toolbox::ajouterMessageAlerte("La modification n'a pas été prise en compte", Toolbox::COULEUR_ROUGE);
+        }
+        header("Location: ".URL."administration/droits");
+    }
+
     public function pageErreur($msg):void
     {
         parent::pageErreur($msg);
