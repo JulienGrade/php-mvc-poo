@@ -23,18 +23,16 @@
                   <a class="nav-link" aria-current="page" href="<?= URL; ?>compte/deconnexion">Se déconnecter</a>
               </li>
           <?php endif; ?>
-        <li class="nav-item">
-          <a class="nav-link" href="<?= URL; ?>page1">page1</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Liste déroulante
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="<?= URL; ?>compte/profil">page2</a></li>
-            <li><a class="dropdown-item" href="<?= URL; ?>page3">page3</a></li>
-          </ul>
-        </li>
+          <?php if(Securite::estConnecte() && Securite::estAdministrateur()) : ?>
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Administration
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="<?= URL; ?>administration/droits">Gérer les droits</a></li>
+                  </ul>
+              </li>
+          <?php endif; ?>
       </ul>
     </div>
   </div>

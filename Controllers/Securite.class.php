@@ -21,5 +21,23 @@ class Securite
     {
         return (!empty($_SESSION['profil']));
     }
+
+    /**
+     * Vérifie si l'utilisateur a le role utilisateur
+     * @return bool
+     */
+    public static function estUtilisateur(): bool
+    {
+        return ($_SESSION['profil']['role'] === "utilisateur");
+    }
+
+    /**
+     * Vérifie si l'utilisateur a le role administrateur
+     * @return bool
+     */
+    public static function estAdministrateur(): bool
+    {
+        return ($_SESSION['profil']['role'] === "administrateur");
+    }
 }
 
