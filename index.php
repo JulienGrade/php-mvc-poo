@@ -6,9 +6,11 @@ define("URL", str_replace("index.php","",(isset($_SERVER['HTTPS'])? "https" : "h
 require_once("./Controllers/Securite.class.php");
 require_once("./Controllers/Visiteur/VisiteurController.php");
 require_once("./Controllers/Utilisateur/UtilisateurController.php");
+require_once("./Controllers/Administrateur/AdministrateurController.php");
 
 $visiteurController = new VisiteurController();
 $utilisateurController = new UtilisateurController();
+$administrateurController = new AdministrateurController();
 
 try {
     if(empty($_GET['page'])){
@@ -89,7 +91,22 @@ try {
                 }
             }
             break;
-        default : throw new RuntimeException("La page n'existe pas");
+        case "administration" :
+            if(!Securite::estConnecte()) {
+                Toolbox::ajouterMessageAlerte("Veuillez vous connecter !",Toolbox::COULEUR_ROUGE);
+                header("Location: ".URL."Login");
+            } elseif(!Securite::estAdministrateur()){
+                Toolbox::ajouterMessageAlerte("Vous n'avez le droit d'être ici",Toolbox::COULEUR_ROUGE);
+                header("Location: ".URL."accueil");
+            } else {
+                switch($url[1]){
+                    case "droits" : $administrateurController->droits();
+                        break;
+                    default : throw new Exception("La page n'existe pas");
+                }
+            }
+            break;
+        default : throw new Exception("La page n'existe pas");
     }
 } catch (Exception $e){
     $visiteurController->pageErreur($e->getMessage());
