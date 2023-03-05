@@ -115,5 +115,23 @@ class UtilisateurManager extends MainManager
         $stmt->closeCursor();
         return $estModifier;
     }
+
+    /**
+     * Permet d'enregistrer la modification du mail en base de données
+     * @param $login
+     * @param $mail
+     * @return bool
+     */
+    public function bdModificationMailUser($login,$mail): bool
+    {
+        $req = "UPDATE utilisateur set mail = :mail WHERE login = :login";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":login",$login,PDO::PARAM_STR);
+        $stmt->bindValue(":mail",$mail,PDO::PARAM_STR);
+        $stmt->execute();
+        $estModifier = ($stmt->rowCount() > 0);
+        $stmt->closeCursor();
+        return $estModifier;
+    }
 }
 

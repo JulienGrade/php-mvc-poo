@@ -150,6 +150,21 @@ class UtilisateurController extends MainController
         }
     }
 
+    /**
+     * Permet de traiter la modification de l'adresse mail
+     * @param $mail
+     * @return void
+     */
+    public function validation_modificationMail($mail): void
+    {
+        if($this->utilisateurManager->bdModificationMailUser($_SESSION['profil']['login'],$mail)){
+            Toolbox::ajouterMessageAlerte("La modification est effectuée", Toolbox::COULEUR_VERTE);
+        } else {
+            Toolbox::ajouterMessageAlerte("Aucune modification effectuée", Toolbox::COULEUR_ROUGE);
+        }
+        header("Location: ".URL."compte/profil");
+    }
+
     // Ici on fait en sorte que la fonction fasse référence à la fonction du parent
     public function pageErreur($msg): void
     {
