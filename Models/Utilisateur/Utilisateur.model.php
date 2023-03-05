@@ -97,5 +97,23 @@ class UtilisateurManager extends MainManager
         $utilisateur = $this->getUserInformation($login);
         return empty($utilisateur);
     }
+
+    /**
+     * Permet de modifier le champ est_valide après l'activation du compte par mail
+     * @param $login
+     * @param $clef
+     * @return bool
+     */
+    public function bdValidationMailCompte($login,$clef): bool
+    {
+        $req = "UPDATE utilisateur set est_valide = 1 WHERE login = :login and clef = :clef";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":login",$login,PDO::PARAM_STR);
+        $stmt->bindValue(":clef",$clef,PDO::PARAM_INT);
+        $stmt->execute();
+        $estModifier = ($stmt->rowCount() > 0);
+        $stmt->closeCursor();
+        return $estModifier;
+    }
 }
 

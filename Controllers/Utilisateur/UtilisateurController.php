@@ -129,6 +129,26 @@ class UtilisateurController extends MainController
         header("Location: ".URL."login");
     }
 
+    /**
+     * Permet d'enregistrer l'activation du compte, sa validation par mail
+     * @param $login
+     * @param $clef
+     * @return void
+     */
+    public function validation_mailCompte($login,$clef): void
+    {
+        if($this->utilisateurManager->bdValidationMailCompte($login,$clef)){
+            Toolbox::ajouterMessageAlerte("Le compte a été activé !", Toolbox::COULEUR_VERTE);
+            $_SESSION['profil'] = [
+                "login" => $login,
+            ];
+            header('Location: '.URL.'compte/profil');
+        } else {
+            Toolbox::ajouterMessageAlerte("Le compte n'a pas été activé !", Toolbox::COULEUR_ROUGE);
+            header('Location: '.URL.'creerCompte');
+        }
+    }
+
     // Ici on fait en sorte que la fonction fasse référence à la fonction du parent
     public function pageErreur($msg): void
     {
