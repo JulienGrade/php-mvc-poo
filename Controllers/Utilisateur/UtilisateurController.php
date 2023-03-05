@@ -210,6 +210,22 @@ class UtilisateurController extends MainController
         }
     }
 
+    /**
+     * Permet de supprimer son compte
+     * @return void
+     */
+    public function suppressionCompte(): void
+    {
+        if($this->utilisateurManager->bdSuppressionCompte($_SESSION['profil']['login'])) {
+            Toolbox::ajouterMessageAlerte("La suppression du compte est effectuée", Toolbox::COULEUR_VERTE);
+            $this->deconnexion();
+        } else {
+            Toolbox::ajouterMessageAlerte("La suppression n'a pas été effectuée. Contactez l'administrateur",Toolbox::COULEUR_ROUGE);
+            header("Location: ".URL."compte/profil");
+        }
+    }
+
+
     // Ici on fait en sorte que la fonction fasse référence à la fonction du parent
     public function pageErreur($msg): void
     {

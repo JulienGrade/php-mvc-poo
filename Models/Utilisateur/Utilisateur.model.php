@@ -151,5 +151,21 @@ class UtilisateurManager extends MainManager
         $stmt->closeCursor();
         return $estModifier;
     }
+
+    /**
+     * Permet d'enregistrer la suppression de compte
+     * @param $login
+     * @return bool
+     */
+    public function bdSuppressionCompte($login): bool
+    {
+        $req="DELETE FROM utilisateur WHERE login = :login";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":login",$login,PDO::PARAM_STR);
+        $stmt->execute();
+        $estModifier = ($stmt->rowCount() > 0);
+        $stmt->closeCursor();
+        return $estModifier;
+    }
 }
 
