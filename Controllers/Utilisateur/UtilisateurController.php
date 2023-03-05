@@ -216,6 +216,8 @@ class UtilisateurController extends MainController
      */
     public function suppressionCompte(): void
     {
+        $this->dossierSuppressionImageUtilisateur($_SESSION['profil']['login']);
+        rmdir("public/assets/images/profils/".$_SESSION['profil']['login']);
         if($this->utilisateurManager->bdSuppressionCompte($_SESSION['profil']['login'])) {
             Toolbox::ajouterMessageAlerte("La suppression du compte est effectuée", Toolbox::COULEUR_VERTE);
             $this->deconnexion();
@@ -236,10 +238,7 @@ class UtilisateurController extends MainController
             $repertoire = "public/assets/images/profils/".$_SESSION['profil']['login']."/";
             $nomImage = Toolbox::ajoutImage($file,$repertoire);//ajout image dans le répertoire
             //Supression de l'ancienne image
-            $ancienneImage = $this->utilisateurManager->getImageUtilisateur($_SESSION['profil']['login']);
-            if($ancienneImage !== "profils/profil.png"){
-                unlink("public/assets/images/".$ancienneImage);
-            }
+            $this->dossierSuppressionImageUtilisateur($_SESSION['profil']['login']);
             //Ajout de la nouvelle image dans la BD
             $nomImageBD = "profils/".$_SESSION['profil']['login']."/".$nomImage;
             if($this->utilisateurManager->bdAjoutImage($_SESSION['profil']['login'],$nomImageBD)){
@@ -254,7 +253,18 @@ class UtilisateurController extends MainController
         header("Location: ".URL."compte/profil");
     }
 
-
+    /**
+     * Permet de supprimer une image
+     * @param $login
+     * @return void
+     */
+    private function dossierSuppressionImageUtilisateur($login): void
+    {
+        $ancienneImage = $this->utilisateurManager->getImageUtilisateur($_SESSION['profil']['login']);
+        if($ancienneImage !== "profils/profil.png"){
+            unlink("public/Assets/images/".$ancienneImage);
+        }
+    }
 
     // Ici on fait en sorte que la fonction fasse référence à la fonction du parent
     public function pageErreur($msg): void
