@@ -31,8 +31,10 @@ class UtilisateurController extends MainController
                 ];
                 header('Location:'.URL."compte/profil");
             }else{
+                $msg = "Le compte ".$login. " n'a pas été activé par mail. ";
+                $msg .= "<a href='renvoyerMailValidation/".$login."'>Renvoyez le mail de validation</a>";
                 Toolbox::ajouterMessageAlerte(
-                    "Le compte n'a pas été activé par mail !",
+                    $msg,
                     Toolbox::COULEUR_ROUGE
                 );
                 header('Location:'.URL."login");
@@ -86,6 +88,7 @@ class UtilisateurController extends MainController
             $passwordCrypte = password_hash($password,PASSWORD_DEFAULT);
             $clef = random_int(0,9999);
             if($this->utilisateurManager->bdCreerCompte($login,$passwordCrypte,$mail,$clef)){
+                $this->sendValidationMail($login, $mail, $clef);
                 Toolbox::ajouterMessageAlerte("La compte a été créé, Un mail de validation vous a été envoyé !", Toolbox::COULEUR_VERTE);
                 header("Location: ".URL."login");
             } else {
@@ -96,6 +99,34 @@ class UtilisateurController extends MainController
             Toolbox::ajouterMessageAlerte("Le login est déjà utilisé !", Toolbox::COULEUR_ROUGE);
             header("Location: ".URL."creerCompte");
         }
+    }
+
+    /**
+     * Permet d'envoyer le mail de validation de création de compte
+     * @param $login
+     * @param $mail
+     * @param $clef
+     * @return void
+     */
+    private function sendValidationMail($login, $mail, $clef): void
+    {
+        // On génère une url pour valider le mail
+        $urlVerification = URL."validationMail/".$login."/".$clef;
+        $sujet = "Création de compte sur le site xxx";
+        $message = "Pour valider votre compte veuillez cliquer sur le lien suivant : ".$urlVerification;
+        Toolbox::sendMail($mail, $sujet, $message);
+    }
+
+    /**
+     * Permet de renvoyer le mail de validation de création de compte
+     * @param $login
+     * @return void
+     */
+    public function renvoyerMailValidation($login): void
+    {
+        $utilisateur = $this->utilisateurManager->getUserInformation($login);
+        $this->sendValidationMail($login,$utilisateur['mail'],$utilisateur['clef']);
+        header("Location: ".URL."login");
     }
 
     // Ici on fait en sorte que la fonction fasse référence à la fonction du parent
