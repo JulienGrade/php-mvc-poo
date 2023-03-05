@@ -174,12 +174,41 @@ class UtilisateurController extends MainController
         $data_page = [
             "page_description" => "Page de modification du password",
             "page_title" => "Page de modification du password",
+            "page_javascript" => ["modificationPassword.js"],
             "view" => "views/Utilisateur/modificationPassword.view.php",
             "template" => "views/partials/template.php"
         ];
         $this->genererPage($data_page);
     }
 
+    /**
+     * Permet de valider et d'enregistrer la modification de mot de passe
+     * @param $ancienPassword
+     * @param $nouveauPassword
+     * @param $confirmationNouveauPassword
+     * @return void
+     */
+    public function validation_modificationPassword($ancienPassword,$nouveauPassword,$confirmationNouveauPassword): void
+    {
+        if($nouveauPassword === $confirmationNouveauPassword){
+            if($this->utilisateurManager->isCombinaisonValide($_SESSION['profil']['login'],$ancienPassword)){
+                $passwordCrypte = password_hash($nouveauPassword,PASSWORD_DEFAULT);
+                if($this->utilisateurManager->bdModificationPassword($_SESSION['profil']['login'],$passwordCrypte)){
+                    Toolbox::ajouterMessageAlerte("La modification du password a été effectuée", Toolbox::COULEUR_VERTE);
+                    header("Location: ".URL."compte/profil");
+                } else {
+                    Toolbox::ajouterMessageAlerte("La modification a échouée", Toolbox::COULEUR_ROUGE);
+                    header("Location: ".URL."compte/modificationPassword");
+                }
+            } else {
+                Toolbox::ajouterMessageAlerte("La combinaison login / ancien password ne correspond pas", Toolbox::COULEUR_ROUGE);
+                header("Location: ".URL."compte/modificationPassword");
+            }
+        } else {
+            Toolbox::ajouterMessageAlerte("Les passwords ne correspondent pas", Toolbox::COULEUR_ROUGE);
+            header("Location: ".URL."compte/modificationPassword");
+        }
+    }
 
     // Ici on fait en sorte que la fonction fasse référence à la fonction du parent
     public function pageErreur($msg): void

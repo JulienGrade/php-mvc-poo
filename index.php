@@ -64,6 +64,18 @@ try {
                         break;
                     case "modificationPassword" : $utilisateurController->modificationPassword();
                         break;
+                    case "validation_modificationPassword" :
+                        if(!empty($_POST['ancienPassword']) && !empty($_POST['nouveauPassword']) && !empty($_POST['confirmNouveauPassword'])){
+                            $ancienPassword = Securite::secureHTML($_POST['ancienPassword']);
+                            $nouveauPassword = Securite::secureHTML($_POST['nouveauPassword']);
+                            $confirmationNouveauPassword = Securite::secureHTML($_POST['confirmNouveauPassword']);
+                            $utilisateurController->validation_modificationPassword($ancienPassword,$nouveauPassword,$confirmationNouveauPassword);
+                        } else {
+                            Toolbox::ajouterMessageAlerte("Vous n'avez pas renseigné toutes les informations", Toolbox::COULEUR_ROUGE);
+                            header("Location: ".URL."compte/modificationPassword");
+                        }
+
+                        break;
                     default : throw new Exception("La page n'existe pas");
                 }
             }

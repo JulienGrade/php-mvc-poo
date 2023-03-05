@@ -133,5 +133,23 @@ class UtilisateurManager extends MainManager
         $stmt->closeCursor();
         return $estModifier;
     }
+
+    /**
+     * Permet d'enregistrer en base la modification de mot de passe
+     * @param $login
+     * @param $password
+     * @return bool
+     */
+    public function bdModificationPassword($login,$password): bool
+    {
+        $req = "UPDATE utilisateur set password = :password WHERE login = :login";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":login",$login,PDO::PARAM_STR);
+        $stmt->bindValue(":password",$password,PDO::PARAM_STR);
+        $stmt->execute();
+        $estModifier = ($stmt->rowCount() > 0);
+        $stmt->closeCursor();
+        return $estModifier;
+    }
 }
 
