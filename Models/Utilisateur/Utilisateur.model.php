@@ -70,17 +70,19 @@ class UtilisateurManager extends MainManager
      * @param $passwordCrypte
      * @param $mail
      * @param $clef
+     * @param $image
      * @return bool
      */
-    public function bdCreerCompte($login,$passwordCrypte,$mail,$clef): bool
+    public function bdCreerCompte($login,$passwordCrypte,$mail,$clef, $image): bool
     {
         $req = "INSERT INTO utilisateur (login, password, mail, est_valide, role, clef, image)
-        VALUES (:login, :password, :mail, 0, 'utilisateur', :clef, '')";
+        VALUES (:login, :password, :mail, 0, 'utilisateur', :clef, :image)";
         $stmt = $this->getBdd()->prepare($req);
         $stmt->bindValue(":login",$login,PDO::PARAM_STR);
         $stmt->bindValue(":password",$passwordCrypte,PDO::PARAM_STR);
         $stmt->bindValue(":mail",$mail,PDO::PARAM_STR);
         $stmt->bindValue(":clef",$clef,PDO::PARAM_INT);
+        $stmt->bindValue(":image",$image,PDO::PARAM_STR);
         $stmt->execute();
         $estModifier = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
@@ -88,7 +90,7 @@ class UtilisateurManager extends MainManager
     }
 
     /**
-     * Permet de vérifier si la lgogin existe déjà en base de données
+     * Permet de vérifier si le login existe déjà en base de données
      * @param $login
      * @return bool
      */
@@ -166,6 +168,39 @@ class UtilisateurManager extends MainManager
         $estModifier = ($stmt->rowCount() > 0);
         $stmt->closeCursor();
         return $estModifier;
+    }
+
+    /**
+     * Permet d'enregistrer une image en base de données
+     * @param $login
+     * @param $image
+     * @return bool
+     */
+    public function bdAjoutImage($login,$image): bool
+    {
+        $req = "UPDATE utilisateur set image = :image WHERE login = :login";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":login",$login,PDO::PARAM_STR);
+        $stmt->bindValue(":image",$image,PDO::PARAM_STR);
+        $stmt->execute();
+        $estModifier = ($stmt->rowCount() > 0);
+        $stmt->closeCursor();
+        return $estModifier;
+    }
+
+    /**
+     * Permet de récupérer l'image d'un utilisateur
+     * @param $login
+     * @return mixed
+     */
+    public function getImageUtilisateur($login){
+        $req = "SELECT image FROM utilisateur WHERE login = :login";
+        $stmt = $this->getBdd()->prepare($req);
+        $stmt->bindValue(":login",$login,PDO::PARAM_STR);
+        $stmt->execute();
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $res['image'];
     }
 }
 
