@@ -56,7 +56,13 @@ try {
             if(!Securite::estConnecte()){
                 Toolbox::ajouterMessageAlerte("Veuillez vous connecter !", Toolbox::COULEUR_ROUGE);
                 header("Location: ".URL."login");
-            } else {
+            }elseif(!Securite::checkCookieConnexion()) {
+                Toolbox::ajouterMessageAlerte("Veuillez vous reconnecter !", Toolbox::COULEUR_ROUGE);
+                setcookie(Securite::COOKIE_NAME,"",time() - 3600);
+                unset($_SESSION["profil"]);
+                header("Location: ".URL."login");
+            }else {
+                Securite::genererCookieConnexion();//regénération du cookie
                 switch($url[1]){
                     case "profil" : $utilisateurController->profil();
                         break;

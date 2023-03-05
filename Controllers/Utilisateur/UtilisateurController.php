@@ -76,6 +76,7 @@ class UtilisateurController extends MainController
     {
         Toolbox::ajouterMessageAlerte("La deconnexion est effectuée",Toolbox::COULEUR_VERTE);
         unset($_SESSION['profil']);
+        setcookie(Securite::COOKIE_NAME,"",time() - 3600);
         header("Location: ".URL."accueil");
     }
 
