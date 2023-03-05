@@ -165,6 +165,22 @@ class UtilisateurController extends MainController
         header("Location: ".URL."compte/profil");
     }
 
+    /**
+     * Permet d'afficher la page de modification de mot de passe
+     * @return void
+     */
+    public function modificationPassword(): void
+    {
+        $data_page = [
+            "page_description" => "Page de modification du password",
+            "page_title" => "Page de modification du password",
+            "view" => "views/Utilisateur/modificationPassword.view.php",
+            "template" => "views/partials/template.php"
+        ];
+        $this->genererPage($data_page);
+    }
+
+
     // Ici on fait en sorte que la fonction fasse référence à la fonction du parent
     public function pageErreur($msg): void
     {
